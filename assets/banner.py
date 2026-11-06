@@ -260,7 +260,10 @@ def ciz(durum=None, zoom=1.0, parla=0.0):
 
 
 # ── araç kartı (README'deki kart; karakter yok) ────────────────────────────
-def kart(yol):
+def kart(yol, no="01", tur="AGENT SKILL", ad="turkce-dogallastirici",
+         aciklama=("Türkçe metindeki yapay zeka ve çeviri izini seçilen kipe göre temizler;",
+                   "sayıları, terimleri, atıfları ve temkinli ifadeleri kodla korur."),
+         etiketler=("CLAUDE CODE", "CODEX", "HERMES")):
     KW, KH = 1600, 520
     zem = Image.new("RGB", (KW, KH), ZEMIN)
     # sağ üstten gelen çok hafif amber ışık (portredeki ışık yönü)
@@ -273,24 +276,23 @@ def kart(yol):
     g = ImageDraw.Draw(big)
     x0, x1 = 72, KW - 72
     g.rectangle([s(x0), s(56), s(x0 + 26), s(60)], fill=KIZIL)
-    aralikli(g, s(x0 + 42), s(65), "ARAÇ 01 · AGENT SKILL", mono(23), .14, fill=AMBER)
+    aralikli(g, s(x0 + 42), s(65), f"ARAÇ {no} · {tur}", mono(23), .14, fill=AMBER)
     sag = "AÇIK KAYNAK"
     aralikli(g, s(x1) - aralikli_gen(sag, mono(23, False), .14), s(65), sag, mono(23, False), .14, fill=SOLUK)
     g.rectangle([s(x0), s(88), s(x1), s(89.5)], fill=CIZGI)
-    g.text((s(x0 - 3), s(196)), "turkce-dogallastirici", font=serif(84, 560), fill=KREM, anchor="ls")
+    g.text((s(x0 - 3), s(196)), ad, font=serif(84, 560), fill=KREM, anchor="ls")
     fd = serif(36, 400)
-    for i, satir in enumerate(["Türkçe metindeki yapay zeka ve çeviri izini seçilen kipe göre temizler;",
-                               "sayıları, terimleri, atıfları ve temkinli ifadeleri kodla korur."]):
+    for i, satir in enumerate(aciklama):
         g.text((s(x0), s(278 + i * 50)), satir, font=fd, fill="#D3C5AF", anchor="ls")
     cx = s(x0)
-    for ad in ["CLAUDE CODE", "CODEX", "HERMES"]:
+    for et in etiketler:
         fm = mono(23)
-        w = aralikli_gen(ad, fm, .1)
+        w = aralikli_gen(et, fm, .1)
         g.rectangle([cx, s(366), cx + w + s(32), s(414)], outline="#8A6A3E", width=s(2))
-        aralikli(g, cx + s(16), s(398), ad, fm, .1, fill=AMBER)
+        aralikli(g, cx + s(16), s(398), et, fm, .1, fill=AMBER)
         cx += w + s(32) + s(16)
     g.rectangle([s(x0), s(450), s(x1), s(451.5)], fill=CIZGI)
-    aralikli(g, s(x0), s(488), "GITHUB.COM/NOIRKRTX/TURKCE-DOGALLASTIRICI", mono(21, False), .06, fill=SOLUK)
+    aralikli(g, s(x0), s(488), "GITHUB.COM/NOIRKRTX/" + ad.upper(), mono(21, False), .06, fill=SOLUK)
     fm = mono(22)
     iw = aralikli_gen("@noirkrtx", fm, .06)
     ix = s(x1) - iw
@@ -315,3 +317,8 @@ if __name__ == "__main__":
     print("yazıldı:", a.o)
     kart(a.kart)
     print("yazıldı:", a.kart)
+    kart(os.path.join(KOK, "kart-harf-bekcisi.png"), no="02", tur="HOOK · SKILL", ad="tr-harf-bekcisi",
+         aciklama=("Ajanların dosyaya yazarken bozduğu Türkçe harfleri bulur: düşen harfler",
+                   "(cok, icin) ve bozuk kodlama (TÃ¼rkÃ§e). Güvenli olanları onarır."),
+         etiketler=("CLAUDE CODE", "CODEX", "HERMES", "PRE-COMMIT"))
+    print("yazıldı: kart-harf-bekcisi.png")
